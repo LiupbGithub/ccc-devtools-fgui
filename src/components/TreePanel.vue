@@ -32,6 +32,7 @@ import CCNode from './CCNode.vue';
 import Utils from '../misc/Utils';
 import CCComponent from './CCComponent.vue';
 import UserComponent from './UserComponent.vue';
+import { CCLogUtils } from '../misc/CCLogUtils';
 
 const props = defineProps({
   show: Boolean,
@@ -130,6 +131,7 @@ function refreshTree() {
 
 function init() {
   refreshTree();
+  CCLogUtils.init();
 }
 
 const intervalId = setInterval(() => {
