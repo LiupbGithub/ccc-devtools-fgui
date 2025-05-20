@@ -18,7 +18,15 @@
         <el-table-column prop="type" label="Type"></el-table-column>
         <el-table-column prop="format" label="Format"></el-table-column>
         <el-table-column prop="id" label="ID"></el-table-column>
-        <el-table-column prop="size" label="Size"></el-table-column>
+        <el-table-column prop="size" label="Size" sortable></el-table-column>
+        <el-table-column label="Preview" width="120">
+          <template #default="scope">
+            <div v-if="isImageAsset(scope.row)" class="image-preview-container">
+              <img :src="getImageUrl(scope.row)" class="image-preview" />
+            </div>
+            <span v-else>-</span>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
     <div class="summary-container">
@@ -52,7 +60,7 @@ const computedShow = computed({
 });
 
 const cacheData = ref<any[]>([]);
-const filterType = ref('all');
+const filterType = ref('texture');
 
 watch(() => props.show, (newValue) => {
   if (newValue) {
@@ -63,9 +71,9 @@ watch(() => props.show, (newValue) => {
 
 const filteredCacheData = computed(() => {
   if (filterType.value === 'all') {
-    return cacheData.value;
+    return cacheData.value.filter(item => item.assetBundle !='总计');
   } else if (filterType.value === 'texture') {
-    return cacheData.value.filter(item => item.type === 'cc.ImageAsset');
+    return cacheData.value.filter(item => item.type === 'cc.ImageAsset' && item.assetBundle !='总计');
   }
   return [];
 });
@@ -88,6 +96,33 @@ function getTotalSize() {
 //   } else {
 //     return (total / (1024 * 1024)).toFixed(2) + ' MB';
 //   }
+}
+
+// 判断是否为图片资源
+function isImageAsset(item: any) {
+  return item && (item.type === 'cc.ImageAsset');
+}
+
+// 获取图片URL
+function getImageUrl(item: any) {
+  try {
+    // @ts-ignore
+    const cc = window['cc'];
+    if (!cc || !item) return '';
+    
+    // 尝试获取纹理资源
+    const texture = item.type === 'cc.ImageAsset' ? 
+      cc.assetManager.assets.get(item.id) : 
+      item;
+      
+    if (texture && texture._nativeData) {
+      return texture._nativeData.currentSrc;
+    }
+    return '';
+  } catch (e) {
+    console.error('获取图片URL失败:', e);
+    return '';
+  }
 }
 </script>
 
@@ -116,5 +151,20 @@ function getTotalSize() {
   font-weight: bold;
   border-top: 1px solid #EBEEF5;
   margin-top: 10px;
+}
+
+.image-preview-container {
+  width: 100px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.image-preview {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
 }
 </style>
