@@ -50,13 +50,18 @@
 </html>
 
 <script>
-    document.getElementsByClassName('toolbar')[0].insertAdjacentHTML('afterbegin', '<div><button id="btn-show-tree">Tree</button></div>');
+    document.getElementsByClassName('toolbar')[0].insertAdjacentHTML('afterbegin', '<div><button id="btn-show-tree">Tree</button><button id="btn-show-cache">Cache</button></div>');
     const devtoolsBtn = document.getElementById('btn-show-tree');
     let isOpen = !!localStorage.getItem('ccc_devtools_show');
     toggle(isOpen);
     devtoolsBtn.addEventListener('click', () => {
         isOpen = !isOpen;
         toggle(isOpen);
+    }, false);
+
+    const cacheBtn = document.getElementById('btn-show-cache');
+    cacheBtn.addEventListener('click', () => {
+        toggleCache(true);
     }, false);
 
     function toggle(isOpen) {
@@ -71,5 +76,11 @@
             devtoolsBtn.classList.remove('checked');
             localStorage.removeItem('ccc_devtools_show');
         }
+    }
+
+    function toggleCache(isOpen) {
+        window.ccdevCacheShow = isOpen;
+        // 触发Vue组件中的toggleCachePanel方法
+        window.dispatchEvent(new CustomEvent('toggleCachePanel'));
     }
 </script>

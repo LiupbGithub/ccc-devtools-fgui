@@ -174,12 +174,12 @@ export class CCLogUtils {
                             itemName = (item._owner && item._owner.name) || '_';
                         }
                         if (content === 'cc.ImageAsset') {
-                            let bundle = cc.assetManager.getBundle(assetBundle)??cc.resources;
+                            let bundle = cc.assetManager.getBundle(assetBundle) ?? cc.resources;
                             preview = item.nativeUrl;
                             let uuidHead = item._uuid.split('@')[0];
                             format = item._native;
                             itemName = getTexName(uuidHead);
-                            let info=bundle.getAssetInfo(item._uuid)
+                            let info = bundle.getAssetInfo(item._uuid)
                             if (info) {
                                 itemName = info.path
                             }

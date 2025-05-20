@@ -23,6 +23,7 @@
       </el-scrollbar>
     </template>
   </div>
+  <CachePanel v-model:show="showCachePanel"></CachePanel>
 </template>
 
 <script lang="ts" setup>
@@ -33,6 +34,7 @@ import Utils from '../misc/Utils';
 import CCComponent from './CCComponent.vue';
 import UserComponent from './UserComponent.vue';
 import { CCLogUtils } from '../misc/CCLogUtils';
+import CachePanel from './CachePanel.vue';
 
 const props = defineProps({
   show: Boolean,
@@ -58,10 +60,20 @@ const defaultProps = {
 
 const treeViewHeight = (window.innerHeight - 120) / 2;
 const treeView = ref(null);
+const showCachePanel = ref(false);
 
 onMounted(() => {
   console.log('ccc-devtools init');
+  window.addEventListener('toggleCachePanel', () => {
+    toggleCachePanel();
+  });
 });
+
+function toggleCachePanel() {
+  console.log('Before toggle:', showCachePanel.value);
+  showCachePanel.value = !showCachePanel.value;
+  console.log('After toggle:', showCachePanel.value);
+}
 
 function getChildByUuidPath(node: any, path: string[], index: number): any {
   if (index >= path.length) {
