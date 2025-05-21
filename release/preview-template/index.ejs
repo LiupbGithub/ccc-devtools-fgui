@@ -67,6 +67,11 @@
     function toggle(isOpen) {
         const devApp = document.getElementById('dev-app');
         window.ccdevShow = isOpen;
+        // 控制Cache按钮显示隐藏
+        const cacheBtn = document.getElementById('btn-show-cache');
+        if (cacheBtn) {
+            cacheBtn.style.display = isOpen ? 'inline-block' : 'none';
+        }
         if (isOpen) {
             devApp.style.display = 'flex';
             devtoolsBtn.classList.add('checked');

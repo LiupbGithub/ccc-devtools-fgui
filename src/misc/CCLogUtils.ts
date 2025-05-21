@@ -159,8 +159,8 @@ export class CCLogUtils {
                     let preview = '';
                     let format = item._native;
                     let content = item.__classname__;
-                    let assetBundle = item._nativeUrl?.split('/')[1]??'';
                     let formatSize = -1;
+                    let assetBundle = '';
                     if (item.type === 'png' || item.type === 'jpg') {
                         let texture = rawCacheData[k.replace('.' + item.type, '.json')];
                         if (texture && texture._owner && texture._owner._name) {
@@ -174,14 +174,22 @@ export class CCLogUtils {
                             itemName = (item._owner && item._owner.name) || '_';
                         }
                         if (content === 'cc.ImageAsset') {
-                            let bundle = cc.assetManager.getBundle(assetBundle) ?? cc.resources;
                             preview = item.nativeUrl;
+                            assetBundle = preview?.split('/')[1]??'';
+                            let bundle = cc.assetManager.getBundle(assetBundle) ?? cc.resources;
                             let uuidHead = item._uuid.split('@')[0];
                             format = item._native;
                             itemName = getTexName(uuidHead);
                             let info = bundle.getAssetInfo(item._uuid)
                             if (info) {
                                 itemName = info.path
+                            }else if (item._uuid.indexOf("remoteAssets") > -1){
+                                let uuids = item._uuid.split('/');
+                                let names = uuids[uuids.length-1].split("?")[0];
+                                itemName = names.split('.')[0];
+                                format = '.'+ names.split('.')[1];
+                            }else{
+                                console.log("未找到图片名称:",assetBundle, preview);
                             }
                             let textureSize = item.width * item.height * ((item._native === '.jpg' ? 3 : 4) / 1024 / 1024);
                             totalTextureSize += textureSize;
