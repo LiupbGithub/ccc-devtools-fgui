@@ -13,12 +13,30 @@
         height="calc(100vh - 250px)" 
         :header-cell-style="{background:'#f5f7fa', color:'#606266'}"
       >
-        <el-table-column prop="assetBundle" label="Asset Bundle" fixed></el-table-column>
-        <el-table-column prop="name" label="Name"></el-table-column>
+        <el-table-column prop="assetBundle" label="Bundle" fixed>
+          <template #default="scope">
+            <div class="copyable-cell" @click="copyToClipboard(scope.row.assetBundle)">
+              {{ scope.row.assetBundle }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="name" label="Name">
+          <template #default="scope">
+            <div class="copyable-cell" @click="copyToClipboard(scope.row.name)">
+              {{ scope.row.name }}
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column prop="type" label="Type"></el-table-column>
         <el-table-column prop="format" label="Format"></el-table-column>
-        <el-table-column prop="id" label="ID"></el-table-column>
-        <el-table-column prop="size" label="Size" sortable></el-table-column>
+        <el-table-column prop="id" label="ID">
+          <template #default="scope">
+            <div class="copyable-cell" @click="copyToClipboard(scope.row.id)">
+              {{ scope.row.id }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="size" label="Size" sortable></el-table-column>  
         <el-table-column label="Preview" width="120">
           <template #default="scope">
             <div v-if="isImageAsset(scope.row)" class="image-preview-container">
@@ -43,6 +61,7 @@
 
 <script lang="ts" setup>
 import { ref, watch, computed } from 'vue';
+import { ElMessage } from 'element-plus';
 
 const props = defineProps({
   show: Boolean,
@@ -124,19 +143,38 @@ function getImageUrl(item: any) {
     return '';
   }
 }
+
+function copyToClipboard(text: string) {
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => {
+    ElMessage({
+      message: '复制成功',
+      type: 'success',
+      duration: 1500
+    });
+  }).catch(() => {
+    ElMessage({
+      message: '复制失败',
+      type: 'error',
+      duration: 1500
+    });
+  });
+}
 </script>
 
 <style scoped>
 .cache-panel-dialog :deep(.el-dialog__body) {
   display: flex;
   flex-direction: column;
-  padding: 10px 20px;
-  height: calc(100vh - 200px);
+  padding: 15px 25px; /* Adjusted padding */
+  height: calc(100vh - 220px); /* Adjusted height */
   overflow: hidden;
 }
 
 .filter-container {
-  margin-bottom: 10px;
+  width: 100px;
+  height: 30px;
+  margin-bottom: 15px; /* Adjusted margin */
 }
 
 .table-container {
@@ -147,10 +185,11 @@ function getImageUrl(item: any) {
 .summary-container {
   display: flex;
   justify-content: space-between;
-  padding: 10px 0;
+  padding: 15px 0; /* Adjusted padding */
   font-weight: bold;
   border-top: 1px solid #EBEEF5;
-  margin-top: 10px;
+  margin-top: 15px; /* Adjusted margin */
+  font-size: 14px; /* Added font size */
 }
 
 .image-preview-container {
@@ -160,11 +199,25 @@ function getImageUrl(item: any) {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  border-radius: 4px;
+  background-color: #f5f7fa;
 }
 
 .image-preview {
-  max-width: 100%;
-  max-height: 100%;
+  max-width: 95%;
+  max-height: 95%;
   object-fit: contain;
+  border-radius: 2px;
+}
+
+.copyable-cell {
+  cursor: pointer;
+  transition: background-color 0.2s;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.copyable-cell:hover {
+  background-color: #f5f7fa;
 }
 </style>
