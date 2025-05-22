@@ -12,6 +12,7 @@
         style="width: 100%" 
         height="calc(100vh - 250px)" 
         :header-cell-style="{background:'#f5f7fa', color:'#606266'}"
+        @sort-change="handleSortChange"
       >
         <el-table-column prop="assetBundle" label="Bundle" fixed>
           <template #default="scope">
@@ -36,7 +37,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="size" label="Size" sortable></el-table-column>  
+        <el-table-column prop="size" label="Size" sortable="custom"></el-table-column>  
         <el-table-column label="Preview" width="120">
           <template #default="scope">
             <div v-if="isImageAsset(scope.row)" class="image-preview-container">
@@ -159,6 +160,36 @@ function copyToClipboard(text: string) {
       duration: 1500
     });
   });
+}
+
+const sortInfo = ref({ prop: '', order: '' });
+
+function parseSize(size: any) {
+  if (typeof size === 'number') return size;
+  if (!size) return 0;
+  if (typeof size === 'string') {
+    let num = parseFloat(size);
+    if (size.includes('MB')) return num * 1024 * 1024;
+    if (size.includes('KB')) return num * 1024;
+    if (size.includes('B')) return num;
+    return num;
+  }
+  return 0;
+}
+
+function handleSortChange({ prop, order }: any) {
+  sortInfo.value = { prop, order };
+  if (prop === 'size') {
+    let total = cacheData.value.pop();
+    cacheData.value = [...cacheData.value].sort((a, b) => {
+      const aSize = parseSize(a.size);
+      const bSize = parseSize(b.size);
+      if (order === 'ascending') return aSize - bSize;
+      if (order === 'descending') return bSize - aSize;
+      return 0;
+    });
+    cacheData.value.push(total);
+  }
 }
 </script>
 
