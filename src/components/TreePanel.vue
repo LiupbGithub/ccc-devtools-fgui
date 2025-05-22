@@ -144,6 +144,7 @@ function refreshTree() {
 function init() {
   refreshTree();
   CCLogUtils.init();
+  CCLogUtils.initGlobal();
 }
 
 const intervalId = setInterval(() => {

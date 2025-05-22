@@ -230,4 +230,30 @@ export class CCLogUtils {
             return result;
         }
     }
+
+    /**
+     * 初始化全局变量 方便全局调用
+     */
+    static initGlobal() {
+        window.dbug = {};
+        // [Symbol(), Symbol([[setResolutionDetailMapCallback]])]
+        let sys = window.System[Object.getOwnPropertySymbols(System)[0]];
+        for (const key in sys) {
+            if (key.includes('/chunks/')) {
+                const element = sys[key];
+                const module = element.C;
+                if (!module) continue;
+                for (const key in module) {
+                    if (Object.prototype.hasOwnProperty.call(module, key)) {
+                        const element = module[key];
+                        let name = key;
+                        if(key =="default"){
+                            name = element.name;
+                        }
+                        window.dbug[name] = element;
+                    }
+                }
+            }
+        }
+    }
 }

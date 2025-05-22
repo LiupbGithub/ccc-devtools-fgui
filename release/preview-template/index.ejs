@@ -50,7 +50,7 @@
 </html>
 
 <script>
-    document.getElementsByClassName('toolbar')[0].insertAdjacentHTML('afterbegin', '<div><button id="btn-show-tree">Tree</button><button id="btn-show-cache">Cache</button></div>');
+    document.getElementsByClassName('toolbar')[0].insertAdjacentHTML('afterbegin', '<div><button id="btn-show-tree">Tree</button><button id="btn-show-cache">Cache</button><button id="btn-show-dbug">dbug</button></div>');
     const devtoolsBtn = document.getElementById('btn-show-tree');
     let isOpen = !!localStorage.getItem('ccc_devtools_show');
     toggle(isOpen);
@@ -62,6 +62,15 @@
     const cacheBtn = document.getElementById('btn-show-cache');
     cacheBtn.addEventListener('click', () => {
         toggleCache(true);
+    }, false);
+
+    const dbugBtn = document.getElementById('btn-show-dbug');
+    dbugBtn.addEventListener('click', () => {
+        if (window.dbug) {
+            console.warn('可使用 window.dbug 或 dbug 全局调试：', window.dbug);
+        } else {
+            console.warn('dbug 未定义');
+        }
     }, false);
 
     function toggle(isOpen) {
