@@ -1,5 +1,5 @@
 <template>
-  <el-dialog v-model="computedShow" title="Cache Content" width="80%" class="cache-panel-dialog">
+  <el-dialog v-model="computedShow" title="Cache Content" width="90%" class="cache-panel-dialog">
     <div class="filter-container">
       <el-select v-model="filterType" placeholder="Select filter">
         <el-option label="All" value="all"></el-option>
@@ -197,7 +197,7 @@ function handleSortChange({ prop, order }: any) {
 .cache-panel-dialog :deep(.el-dialog__body) {
   display: flex;
   flex-direction: column;
-  padding: 15px 25px; /* Adjusted padding */
+  padding: 15px 15px; /* Adjusted padding */
   height: calc(100vh - 220px); /* Adjusted height */
   overflow: hidden;
 }
